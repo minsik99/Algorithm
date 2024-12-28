@@ -43,26 +43,24 @@ public class Main {
         br.close();
     }
 
-    private static void dfs(int number, int jarisu) {
-        if (jarisu == N) {
-            if (isPrime(number)) {
-                System.out.println(number);
-            }
-            return;
-        }
-        for (int i = 1; i < 10; i++) {
-            if (i % 2 == 0) continue;
-            if (isPrime(number * 10 + i)) {
-                dfs(number * 10 + i, jarisu + 1);
-            }
-        }
-    }
-
     private static boolean isPrime(int i) {
-        for (int j = 2; j <= i / 2; j++) {
-            if (i % j == 0)
-                return false;
+        if (i < 2) return false;
+        for (int j = 2; j * j <= i; j++) {
+            if (i % j == 0) return false;
         }
         return true;
+    }
+
+    private static void dfs(int number, int jarisu) {
+        if (jarisu == N) {
+            System.out.println(number);
+            return;
+        }
+        for (int i = 1; i < 10; i += 2) { // 홀수만 탐색
+            int next = number * 10 + i;
+            if (isPrime(next)) {
+                dfs(next, jarisu + 1);
+            }
+        }
     }
 }
