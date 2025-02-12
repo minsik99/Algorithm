@@ -13,7 +13,6 @@ class Solution {
             sb.append(stack.pop());
         }
         sb.reverse();
-        System.out.println(sb.toString());
         int[] arr = new int[sb.toString().length()];
         for (int i = 0; i < arr.length; i++) {
             arr[i] = sb.toString().charAt(i) - '0';
