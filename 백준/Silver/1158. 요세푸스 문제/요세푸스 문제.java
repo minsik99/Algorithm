@@ -1,69 +1,44 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.security.KeyStore.Entry;
+import java.time.Year;
 import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-/*
-    [요구 사항]
-
-    입력 : 두 자연수 1 <= K <= N <= 5,000
-
-    출력 : 요세푸스 순열 출력
-
-    [해결 과정]
-
-    큐를 활용하여 1부터 N까지 푸시
-    하나씩 팝하면서 K번째가 아니라면 다시 푸시
-    K번째라면 출력
-
-    [슈도 코드]
-    자연수 N, K 저장
-    큐 선언
-    1부터 N까지 큐에 저장
-    큐가 빌 때까지 팝하면서
-        K번째가 아니라면 다시 푸시
-        맞다면 출력
- */
-
 public class Main {
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        Queue<Integer> queue = new ArrayDeque<>();
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
 
-        // 1부터 N까지 큐에 푸시
-        for (int i = 1; i <= N; i++) {
-            queue.add(i);
-        }
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int n = Integer.parseInt(st.nextToken());
+		int k = Integer.parseInt(st.nextToken());
 
-        sb.append("<");
+		ArrayDeque<Integer> queue = new ArrayDeque<>();
+		for (int i = 1; i <= n; i++) {
+			queue.add(i);
+		}
 
-        // 큐가 빌 때까지 팝
-        int cnt = 0;
-        while (!queue.isEmpty()) {
-            cnt++;
-            int front = queue.poll();
-            if (cnt % M == 0) {
-                if (queue.size() == 0) {
-                    sb.append(front);
-                } else {
-                    sb.append(front).append(", ");
-                }
-                continue;
-            }
-            queue.add(front);
-        }
+		sb.append("<");
 
-        sb.append(">");
+		int idx = 0;
+		while (queue.size() > 1) {
+			idx++;
+			int current = queue.poll();
+			if (idx % k == 0) {
+				sb.append(current).append(", ");
+			} else {
+				queue.add(current);
+			}
+		}
 
-        System.out.println(sb);
+		sb.append(queue.poll()).append(">");
 
-        br.close();
-    }
+		System.out.print(sb);
+	}
 }
