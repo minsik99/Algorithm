@@ -7,11 +7,10 @@ class Solution {
             map.put(str.length(), map.getOrDefault(str.length(), 0) + 1);
         }
         int[] arr = new int[strArr.length];
-        int idx = 0;
+        int answer = 0;
         for (int key : map.keySet()) {
-            arr[idx++] = map.get(key);
+            answer = Math.max(answer, map.get(key));
         }
-        Arrays.sort(arr);
-        return arr[arr.length - 1];
+        return answer;
     }
 }
