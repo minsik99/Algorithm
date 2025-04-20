@@ -1,95 +1,80 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
 	static int[] parent;
-	static int[] rank;
+	static PriorityQueue<MyEdge> queue;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
+		StringTokenizer st;
 
-		StringTokenizer st = new StringTokenizer(br.readLine());
-		int V = Integer.parseInt(st.nextToken());
-		int E = Integer.parseInt(st.nextToken());
+		st = new StringTokenizer(br.readLine());
 
-		parent = new int[V + 1];
-		rank = new int[V + 1];
-		for (int i = 1; i <= V; i++) {
+		int n = Integer.parseInt(st.nextToken());
+		int m = Integer.parseInt(st.nextToken());
+
+		queue = new PriorityQueue<>(Comparator.comparingInt(o -> o.v));
+
+		parent = new int[n + 1];
+		for (int i = 0; i < n; i++) {
 			parent[i] = i;
 		}
 
-		List<Edge> edges = new ArrayList<>();
-		for (int i = 0; i < E; i++) {
+		for (int i = 0; i < m; i++) {
 			st = new StringTokenizer(br.readLine());
-			int u = Integer.parseInt(st.nextToken());
+			int s = Integer.parseInt(st.nextToken());
+			int e = Integer.parseInt(st.nextToken());
 			int v = Integer.parseInt(st.nextToken());
-			int weight = Integer.parseInt(st.nextToken());
-			edges.add(new Edge(u, v, weight));
+			queue.add(new MyEdge(s, e, v));
 		}
 
-		Collections.sort(edges);
+		int useEdge = 0;
+		int result = 0;
 
-		int mstWeight = 0;
-		int edgeCount = 0;
+		while (useEdge < n - 1) {
+			MyEdge current = queue.poll();
 
-		for (Edge edge : edges) {
-			if (union(edge.u, edge.v)) {
-				mstWeight += edge.weight;
-				edgeCount++;
-				if (edgeCount == V - 1)
-					break;
+			if (find(current.s) != find(current.e)) {
+				union(current.s, current.e);
+				result += current.v;
+				useEdge++;
 			}
 		}
+		sb.append(result);
 
-		sb.append(mstWeight);
-		System.out.print(sb);
+		System.out.println(sb);
 	}
 
-	static class Edge implements Comparable<Edge> {
-		int u, v, weight;
+	private static void union(int s, int e) {
+		s = find(s);
+		e = find(e);
 
-		Edge(int u, int v, int weight) {
-			this.u = u;
-			this.v = v;
-			this.weight = weight;
-		}
-
-		@Override
-		public int compareTo(Main.Edge other) {
-			return Integer.compare(this.weight, other.weight);
+		if (s != e) {
+			parent[e] = s;
 		}
 	}
 
-	static boolean union(int a, int b) {
-		int rootA = find(a);
-		int rootB = find(b);
-
-		if (rootA != rootB) {
-			if (rank[rootA] < rank[rootB]) {
-				parent[rootA] = rootB;
-				return true;
-			} else if (rank[rootA] > rank[rootB]) {
-				parent[rootB] = rootA;
-				return true;
-			} else {
-				parent[rootB] = rootA;
-				rank[rootA]++;
-				return true;
-			}
+	private static int find(int n) {
+		if (n == parent[n]) {
+			return n;
 		}
-		return false;
+		return parent[n] = find(parent[n]);
 	}
 
-	static int find(int value) {
-		if (parent[value] != value) {
-			parent[value] = find(parent[value]);
-		}
-		return parent[value];
+}
+
+class MyEdge {
+	int s, e, v;
+
+	MyEdge(int s, int e, int v) {
+		this.s = s;
+		this.e = e;
+		this.v = v;
 	}
 }
