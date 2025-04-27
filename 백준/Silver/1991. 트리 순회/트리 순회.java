@@ -1,94 +1,71 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
+	static int[][] tree;
+	static StringBuilder answer;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb = new StringBuilder();
+		StringTokenizer st;
 
-		int N = Integer.parseInt(br.readLine());
+		int n = Integer.parseInt(br.readLine());
+		tree = new int[26][2];
 
-		Bst tree = new Bst();
+		answer = new StringBuilder();
 
-		for (int i = 0; i < N; i++) {
-			String[] input = br.readLine().split(" ");
-			char rootValue = input[0].charAt(0);
-			char value1 = input[1].charAt(0);
-			char value2 = input[2].charAt(0);
-			tree.insert(rootValue, value1, value2);
+		for (int i = 0; i < n; i++) {
+			String[] tmp = br.readLine().split(" ");
+			int node = tmp[0].charAt(0) - 'A';
+			char left = tmp[1].charAt(0);
+			char right = tmp[2].charAt(0);
+
+			if (left == '.') {
+				tree[node][0] = -1;
+			} else {
+				tree[node][0] = left - 'A';
+			}
+
+			if (right == '.') {
+				tree[node][1] = -1;
+			} else {
+				tree[node][1] = right - 'A';
+			}
 		}
 
-		tree.preorder(tree.root);
-		System.out.println();
-		tree.inorder(tree.root);
-		System.out.println();
-		tree.postorder(tree.root);
+		preOrder(0);
+		answer.append("\n");
+		inOrder(0);
+		answer.append("\n");
+		postOrder(0);
 
-		System.out.print(sb);
+		System.out.println(answer);
 	}
 
-}
-
-class Bst {
-	Node root;
-
-	Bst() {
-		root = null;
+	private static void preOrder(int now) {
+		if (now == -1)
+			return;
+		answer.append((char) (now + 'A'));
+		preOrder(tree[now][0]);
+		preOrder(tree[now][1]);
 	}
 
-	void insert(char rootValue, char value1, char value2) {
-		if (root == null) {
-			root = new Node(rootValue);
-		}
-		
-		insertNode(root, rootValue, value1, value2);
+	private static void inOrder(int now) {
+		if (now == -1)
+			return;
+		inOrder(tree[now][0]);
+		answer.append((char) (now + 'A'));
+		inOrder(tree[now][1]);
 	}
 
-	void insertNode(Node current, char rootValue, char value1, char value2) {
-		if (current == null) return;
-		
-		if (current.value == rootValue) {
-			current.left = (value1 == '.') ? null : new Node(value1);
-			current.right = (value2 == '.') ? null : new Node(value2);
-		} else {
-			insertNode(current.left, rootValue, value1, value2);
-			insertNode(current.right, rootValue, value1, value2);
-		}
-	}
-
-	void preorder(Node root) {
-		if (root != null) {
-			System.out.print(root.value);
-			preorder(root.left);
-			preorder(root.right);
-		}
-	}
-	
-	void inorder(Node root) {
-		if (root != null) {
-			inorder(root.left);
-			System.out.print(root.value);
-			inorder(root.right);
-		}
-	}
-	
-	void postorder(Node root) {
-		if (root != null) {
-			postorder(root.left);
-			postorder(root.right);
-			System.out.print(root.value);
-		}
-	}
-}
-
-class Node {
-	char value;
-	Node left, right;
-
-	Node(char value) {
-		this.value = value;
-		this.left = this.right = null;
+	private static void postOrder(int now) {
+		if (now == -1)
+			return;
+		postOrder(tree[now][0]);
+		postOrder(tree[now][1]);
+		answer.append((char) (now + 'A'));
 	}
 }
