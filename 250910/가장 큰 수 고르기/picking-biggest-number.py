@@ -1,11 +1,11 @@
 import sys
 
-max = -sys.maxsize
+max_value = -sys.maxsize
 
 numbers = list(map(int, input().split(' ')))
 
 for number in numbers:
-    if max < number:
-        max = number
+    if max_value < number:
+        max_value = number
 
-print(max)
+print(max_value)
