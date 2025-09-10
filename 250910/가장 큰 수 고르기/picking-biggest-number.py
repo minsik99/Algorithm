@@ -1,6 +1,6 @@
 import sys
 
-max_value = -sys.maxsize
+max_value = 0
 
 numbers = list(map(int, input().split(' ')))
 
